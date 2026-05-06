@@ -1,0 +1,13 @@
+{
+  "name": "pesquisa-pimenta-bueno",
+  "version": "1.0.0",
+  "description": "Formulário de pesquisa da Prefeitura de Pimenta Bueno",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}

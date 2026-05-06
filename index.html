@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Pesquisa de Opinião - Prefeitura de Pimenta Bueno</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Sora:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1: #f2f6fa;
+            --bg-2: #dbe7f2;
+            --ink: #143147;
+            --ink-soft: #48657a;
+            --line: #d4e1eb;
+            --brand-1: #0a3c60;
+            --brand-2: #236a8a;
+            --brand-3: #2f8a7f;
+            --ok: #1f9d64;
+            --error: #d94853;
+            --card: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 85% 15%, rgba(47, 138, 127, 0.15) 0%, transparent 42%),
+                radial-gradient(circle at 15% 78%, rgba(10, 60, 96, 0.16) 0%, transparent 48%),
+                linear-gradient(145deg, var(--bg-1), var(--bg-2));
+            font-family: "Manrope", "Segoe UI", sans-serif;
+            color: var(--ink);
+            padding: 2rem 1rem;
+        }
+
+        .container { max-width: 940px; margin: 0 auto; }
+
+        .form-card {
+            background: var(--card);
+            border-radius: 28px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 24px 44px -20px rgba(17, 52, 79, 0.45);
+            animation: riseIn 0.55s ease;
+        }
+
+        .form-header {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(130deg, var(--brand-1), var(--brand-2));
+            padding: 2.2rem 2rem 2rem;
+            color: #fff;
+            text-align: center;
+        }
+
+        .form-header::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            right: -120px;
+            top: -120px;
+        }
+
+        .form-header h1 {
+            position: relative;
+            font-family: "Sora", "Manrope", sans-serif;
+            font-size: clamp(1.45rem, 2.7vw, 2.1rem);
+            letter-spacing: -0.03em;
+            margin-bottom: 0.65rem;
+        }
+
+        .form-header p {
+            position: relative;
+            max-width: 780px;
+            margin: 0 auto;
+            line-height: 1.58;
+            opacity: 0.95;
+        }
+
+        .form-body { padding: 2rem; }
+
+        .question {
+            padding-bottom: 1.35rem;
+            margin-bottom: 1.8rem;
+            border-bottom: 1px dashed var(--line);
+        }
+
+        .question:last-child { border-bottom: 0; margin-bottom: 0.4rem; }
+
+        .question-label {
+            display: block;
+            margin-bottom: 0.95rem;
+            font-size: clamp(1.03rem, 1.85vw, 1.18rem);
+            line-height: 1.42;
+            color: var(--brand-1);
+            font-weight: 800;
+        }
+
+        .required-star { color: var(--error); font-size: 1.05rem; margin-left: 4px; }
+
+        .help-text { font-size: 0.84rem; color: var(--ink-soft); margin-top: 0.35rem; margin-bottom: 0.7rem; }
+
+        .options-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.72rem;
+        }
+
+        .option-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            border: 1px solid #d9e6ef;
+            border-radius: 999px;
+            padding: 0.52rem 0.85rem;
+            background: #f8fbfe;
+            transition: 0.2s ease;
+            cursor: pointer;
+            font-size: 0.96rem;
+        }
+
+        .option-item:hover {
+            transform: translateY(-1px);
+            border-color: #b8d2e2;
+            background: #eef6fb;
+        }
+
+        input[type="radio"], input[type="checkbox"] {
+            width: 1.08rem;
+            height: 1.08rem;
+            accent-color: var(--brand-2);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .check-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+            gap: 0.7rem;
+        }
+
+        .check-group .option-item {
+            border-radius: 14px;
+            justify-content: flex-start;
+            min-height: 46px;
+        }
+
+        .textarea-suggestion {
+            width: 100%;
+            border: 1.4px solid #c5d8e5;
+            border-radius: 16px;
+            padding: 0.9rem 1rem;
+            font-size: 0.97rem;
+            line-height: 1.5;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: 0.2s ease;
+        }
+
+        .textarea-suggestion:focus {
+            outline: none;
+            border-color: var(--brand-2);
+            box-shadow: 0 0 0 4px rgba(35, 106, 138, 0.18);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1.9rem;
+        }
+
+        .btn-submit,
+        .btn-clear {
+            border: 0;
+            border-radius: 999px;
+            padding: 0.85rem 1.45rem;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .btn-submit {
+            background: linear-gradient(130deg, var(--brand-2), var(--brand-3));
+            color: #fff;
+            box-shadow: 0 10px 18px -12px rgba(9, 57, 86, 0.6);
+        }
+
+        .btn-submit:hover { transform: translateY(-1px); filter: brightness(1.04); }
+
+        .btn-clear {
+            background: #edf4f9;
+            color: #21455d;
+            border: 1px solid #ccdce8;
+        }
+
+        .btn-clear:hover { background: #e4eef6; }
+
+        .toast-message {
+            background: var(--ok);
+            color: #fff;
+            padding: 0.78rem 1rem;
+            border-radius: 14px;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 10px 18px -12px rgba(18, 70, 52, 0.7);
+        }
+
+        .error-message { background: var(--error); }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(9, 22, 34, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 1000;
+        }
+
+        .modal-card {
+            width: 100%;
+            max-width: 520px;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            padding: 1.4rem;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0b3b5f;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-text {
+            color: #395566;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.6rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-modal {
+            border: none;
+            border-radius: 999px;
+            padding: 0.65rem 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-modal-view {
+            background: #1b6d8a;
+            color: #fff;
+        }
+
+        .btn-modal-close {
+            background: #eef3f7;
+            color: #234559;
+        }
+
+        .btn-modal-share {
+            background: #25d366;
+            color: #ffffff;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.76rem;
+            color: #4a6272;
+            margin-top: 1.35rem;
+            line-height: 1.45;
+        }
+
+        @keyframes riseIn {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .form-body { padding: 1.35rem; }
+            .form-header { padding: 1.7rem 1.2rem 1.55rem; }
+            .option-item { width: 100%; border-radius: 14px; }
+            .actions { justify-content: stretch; }
+            .btn-submit, .btn-clear { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="form-card">
+        <div class="form-header">
+            <h1>📊 PESQUISA — POPULAÇÃO</h1>
+            <p>Olá, morador de Pimenta Bueno!<br>É um prazer contar com a sua participação.<br>
+            Preparamos este questionário para conhecer melhor suas opiniões, sugestões e expectativas sobre a Administração Pública Municipal e os direitos que lhe assistem como cidadão.</p>
+        </div>
+
+        <div class="form-body">
+            <form id="pesquisaForm">
+                <!-- P1: qualidade serviços online -->
+                <div class="question">
+                    <span class="question-label">1. Como você percebe a qualidade dos serviços oferecidos pela Prefeitura de Pimenta Bueno e suas secretarias por meios online, como WhatsApp, emissão de nota fiscal, IPTU e acesso ao E-proc? <span class="required-star">*</span></span>
+                    <div class="options-group" id="grp_online">
+                        <label class="option-item"><input type="radio" name="qualidade_online" value="Excelente" required> Excelente</label>
+                        <label class="option-item"><input type="radio" name="qualidade_online" value="Boa"> Boa</label>
+                        <label class="option-item"><input type="radio" name="qualidade_online" value="Regular"> Regular</label>
+                        <label class="option-item"><input type="radio" name="qualidade_online" value="Ruim"> Ruim</label>
+                        <label class="option-item"><input type="radio" name="qualidade_online" value="Péssima"> Péssima</label>
+                    </div>
+                </div>
+
+                <!-- P2: informações site claras -->
+                <div class="question">
+                    <span class="question-label">2. Na sua percepção, as informações disponíveis no site da Prefeitura são claras e acessíveis? <span class="required-star">*</span></span>
+                    <div class="options-group">
+                        <label class="option-item"><input type="radio" name="clareza_site" value="Sim, totalmente claras" required> Sim, totalmente claras</label>
+                        <label class="option-item"><input type="radio" name="clareza_site" value="Sim, na maior parte"> Sim, na maior parte</label>
+                        <label class="option-item"><input type="radio" name="clareza_site" value="Mais ou menos"> Mais ou menos</label>
+                        <label class="option-item"><input type="radio" name="clareza_site" value="Não, são confusas"> Não, são confusas</label>
+                        <label class="option-item"><input type="radio" name="clareza_site" value="Não sei opinar"> Não sei opinar</label>
+                    </div>
+                </div>
+
+                <!-- P3: facilidade informações Portal Transparência -->
+                <div class="question">
+                    <span class="question-label">3. Quão fácil ou difícil é, na sua opinião, encontrar informações no Portal da Transparência e no site oficial da Prefeitura de Pimenta Bueno? <span class="required-star">*</span></span>
+                    <div class="options-group">
+                        <label class="option-item"><input type="radio" name="facilidade_info" value="Muito fácil" required> Muito fácil</label>
+                        <label class="option-item"><input type="radio" name="facilidade_info" value="Fácil"> Fácil</label>
+                        <label class="option-item"><input type="radio" name="facilidade_info" value="Difícil"> Difícil</label>
+                        <label class="option-item"><input type="radio" name="facilidade_info" value="Muito difícil"> Muito difícil</label>
+                        <label class="option-item"><input type="radio" name="facilidade_info" value="Nunca tentei"> Nunca tentei</label>
+                    </div>
+                </div>
+
+                <!-- P4: áreas saúde pública (múltipla escolha) -->
+                <div class="question">
+                    <span class="question-label">4. Na sua opinião, quais áreas da saúde pública municipal mais precisam de melhorias? <span class="required-star">*</span> (pode marcar várias)</span>
+                    <div class="check-group" id="saude_areas">
+                        <label class="option-item"><input type="checkbox" name="saude" value="Atendimento nas UBS"> Atendimento nas UBS</label>
+                        <label class="option-item"><input type="checkbox" name="saude" value="Filas de espera para consultas"> Filas de espera para consultas</label>
+                        <label class="option-item"><input type="checkbox" name="saude" value="Atendimento de urgência / pronto-socorro"> Atendimento de urgência / pronto-socorro</label>
+                        <label class="option-item"><input type="checkbox" name="saude" value="Distribuição de medicamentos"> Distribuição de medicamentos</label>
+                        <label class="option-item"><input type="checkbox" name="saude" value="Programas de prevenção e vacinação"> Programas de prevenção e vacinação</label>
+                        <label class="option-item"><input type="checkbox" name="saude" value="Atendimento odontológico"> Atendimento odontológico</label>
+                        <label class="option-item"><input type="checkbox" name="saude" value="Serviços de saúde mental"> Serviços de saúde mental</label>
+                        <label class="option-item"><input type="checkbox" name="saude" value="Outros (especifique na sugestão final)"> Outros (especifique na sugestão final)</label>
+                    </div>
+                </div>
+
+                <!-- P5: áreas da Educação -->
+                <div class="question">
+                    <span class="question-label">5. Na sua opinião, quais áreas da Educação municipal mais precisam de melhorias? <span class="required-star">*</span> (múltipla escolha)</span>
+                    <div class="check-group" id="educ_areas">
+                        <label class="option-item"><input type="checkbox" name="educacao" value="Infraestrutura das escolas"> Infraestrutura das escolas</label>
+                        <label class="option-item"><input type="checkbox" name="educacao" value="Merenda escolar"> Merenda escolar</label>
+                        <label class="option-item"><input type="checkbox" name="educacao" value="Capacitação de professores"> Capacitação de professores</label>
+                        <label class="option-item"><input type="checkbox" name="educacao" value="Transporte escolar"> Transporte escolar</label>
+                        <label class="option-item"><input type="checkbox" name="educacao" value="Material didático e tecnológico"> Material didático e tecnológico</label>
+                        <label class="option-item"><input type="checkbox" name="educacao" value="Educação inclusiva"> Educação inclusiva</label>
+                        <label class="option-item"><input type="checkbox" name="educacao" value="Atividades extracurriculares"> Atividades extracurriculares</label>
+                    </div>
+                </div>
+
+                <!-- P6: áreas do SETOR DE OBRAS E INFRAESTRUTURA -->
+                <div class="question">
+                    <span class="question-label">6. Na sua opinião, quais áreas do SETOR DE OBRAS E INFRAESTRUTURA municipal mais precisam de melhorias? <span class="required-star">*</span> (multipla)</span>
+                    <div class="check-group" id="obras_areas">
+                        <label class="option-item"><input type="checkbox" name="obras" value="Pavimentação asfáltica / calçamento"> Pavimentação asfáltica / calçamento</label>
+                        <label class="option-item"><input type="checkbox" name="obras" value="Iluminação pública"> Iluminação pública</label>
+                        <label class="option-item"><input type="checkbox" name="obras" value="Saneamento básico / drenagem"> Saneamento básico / drenagem</label>
+                        <label class="option-item"><input type="checkbox" name="obras" value="Manutenção de praças e áreas de lazer"> Manutenção de praças e áreas de lazer</label>
+                        <label class="option-item"><input type="checkbox" name="obras" value="Limpeza urbana e coleta de lixo"> Limpeza urbana e coleta de lixo</label>
+                        <label class="option-item"><input type="checkbox" name="obras" value="Sinalização de trânsito e mobilidade"> Sinalização de trânsito e mobilidade</label>
+                        <label class="option-item"><input type="checkbox" name="obras" value="Acessibilidade em espaços públicos"> Acessibilidade em espaços públicos</label>
+                    </div>
+                </div>
+
+                <!-- Sugestão final (campo texto livre) -->
+                <div class="question">
+                    <label class="question-label" for="sugestao">📝 Você gostaria de deixar alguma sugestão para melhorar os serviços prestados pela Prefeitura?</label>
+                    <textarea id="sugestao" name="sugestao" rows="4" class="textarea-suggestion" placeholder="Escreva aqui sua mensagem, ideias, críticas construtivas ou outros pontos que desejar..."></textarea>
+                </div>
+
+                <div class="actions">
+                    <button type="button" class="btn-clear" id="clearBtn">Limpar formulário</button>
+                    <button type="submit" class="btn-submit">✅ Enviar pesquisa</button>
+                </div>
+            </form>
+            <div id="feedbackMsg" style="margin-top: 1.2rem;"></div>
+        </div>
+    </div>
+    <footer>
+        🔒 Este formulário respeita sua privacidade. Nenhum dado é enviado a servidores externos sem sua autorização explícita.<br>
+    </footer>
+</div>
+
+<div class="modal-overlay" id="successModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-title" id="modalTitle">✅ Pesquisa enviada com sucesso</div>
+        <div class="modal-text">Obrigado por participar! Se desejar, veja o painel público com os gráficos gerais da pesquisa.</div>
+        <div class="modal-actions">
+            <button type="button" class="btn-modal btn-modal-view" id="viewChartsBtn">📊 Ver dados (gráficos)</button>
+            <button type="button" class="btn-modal btn-modal-share" id="shareWhatsBtn">🟢 Compartilhar no WhatsApp</button>
+            <button type="button" class="btn-modal btn-modal-close" id="closeModalBtn">Fechar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const form = document.getElementById('pesquisaForm');
+        const submitBtn = form.querySelector('.btn-submit');
+        const STORAGE_KEY = 'pesquisa_pimenta_bueno_enviada_v1';
+        const CLIENT_ID_KEY = 'pesquisa_pimenta_bueno_client_id_v1';
+        const successModal = document.getElementById('successModal');
+        const viewChartsBtn = document.getElementById('viewChartsBtn');
+        const shareWhatsBtn = document.getElementById('shareWhatsBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        function getOrCreateClientId() {
+            let id = localStorage.getItem(CLIENT_ID_KEY);
+            if (!id) {
+                id = `cid_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+                localStorage.setItem(CLIENT_ID_KEY, id);
+            }
+            return id;
+        }
+
+        // Função para validar se pelo menos uma checkbox de cada grupo obrigatório foi marcada
+        function isCheckboxGroupValid(groupName) {
+            let checkboxes = document.querySelectorAll(`input[name="${groupName}"]:checked`);
+            return checkboxes.length > 0;
+        }
+
+        function showMessage(msg, isError = false) {
+            const msgDiv = document.getElementById('feedbackMsg');
+            msgDiv.innerHTML = `<div class="toast-message ${isError ? 'error-message' : ''}">${msg}</div>`;
+            setTimeout(() => {
+                if(msgDiv.firstChild) msgDiv.firstChild.style.opacity = '0';
+                setTimeout(() => { msgDiv.innerHTML = ''; }, 600);
+            }, 4000);
+        }
+
+        function lockFormAsSubmitted() {
+            const fields = form.querySelectorAll('input, textarea, button');
+            fields.forEach((field) => {
+                if (field.id !== 'clearBtn') {
+                    field.disabled = true;
+                }
+            });
+
+            submitBtn.textContent = '✅ Pesquisa já enviada';
+            submitBtn.style.background = '#2f855a';
+            submitBtn.style.cursor = 'not-allowed';
+        }
+
+        function openSuccessModal() {
+            successModal.style.display = 'flex';
+            successModal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeSuccessModal() {
+            successModal.style.display = 'none';
+            successModal.setAttribute('aria-hidden', 'true');
+        }
+
+        const alreadySubmitted = localStorage.getItem(STORAGE_KEY) === '1';
+        if (alreadySubmitted) {
+            lockFormAsSubmitted();
+            showMessage('✅ Sua pesquisa já foi enviada neste dispositivo. Obrigado pela participação!');
+        }
+
+        // Função para enviar dados para o backend
+        async function submitFormData(formData) {
+            try {
+                const response = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'Erro ao enviar formulário');
+                }
+
+                return result;
+            } catch (error) {
+                console.error('Erro ao enviar formulário:', error);
+                throw error;
+            }
+        }
+
+        // Envio do formulário
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (localStorage.getItem(STORAGE_KEY) === '1') {
+                showMessage('✅ Este dispositivo já enviou a pesquisa. Obrigado pela participação!');
+                return;
+            }
+
+            // Validação radios obrigatórios
+            const qualidadeOnline = document.querySelector('input[name="qualidade_online"]:checked');
+            const clarezaSite = document.querySelector('input[name="clareza_site"]:checked');
+            const facilidadeInfo = document.querySelector('input[name="facilidade_info"]:checked');
+            
+            if (!qualidadeOnline) {
+                showMessage('⚠️ Por favor, responda à pergunta sobre qualidade dos serviços online.', true);
+                return;
+            }
+            if (!clarezaSite) {
+                showMessage('⚠️ Por favor, responda se as informações do site são claras.', true);
+                return;
+            }
+            if (!facilidadeInfo) {
+                showMessage('⚠️ Responda sobre a facilidade de encontrar informações no Portal da Transparência.', true);
+                return;
+            }
+
+            // Validação dos grupos de checkbox obrigatórios (saúde, educação, obras)
+            if (!isCheckboxGroupValid('saude')) {
+                showMessage('⚠️ Selecione pelo menos uma área de melhorias na SAÚDE pública.', true);
+                return;
+            }
+            if (!isCheckboxGroupValid('educacao')) {
+                showMessage('⚠️ Selecione pelo menos uma área de melhorias na EDUCAÇÃO municipal.', true);
+                return;
+            }
+            if (!isCheckboxGroupValid('obras')) {
+                showMessage('⚠️ Selecione pelo menos uma área de melhorias no SETOR DE OBRAS E INFRAESTRUTURA.', true);
+                return;
+            }
+
+            // Coleta de dados
+            const formData = {
+                client_id: getOrCreateClientId(),
+                qualidade_online: qualidadeOnline.value,
+                clareza_site: clarezaSite.value,
+                facilidade_info: facilidadeInfo.value,
+                saude: [...document.querySelectorAll('input[name="saude"]:checked')].map(cb => cb.value),
+                educacao: [...document.querySelectorAll('input[name="educacao"]:checked')].map(cb => cb.value),
+                obras: [...document.querySelectorAll('input[name="obras"]:checked')].map(cb => cb.value),
+                sugestao: document.getElementById('sugestao').value.trim()
+            };
+
+            // Mostra mensagem de carregamento
+            showMessage('🔄 Enviando sua pesquisa...');
+
+            try {
+                // Envia dados para o backend
+                const result = await submitFormData(formData);
+                
+                // Mensagem de sucesso
+                showMessage('✅ Pesquisa enviada com sucesso! Obrigado por contribuir. Sua opinião é essencial para Pimenta Bueno.');
+                localStorage.setItem(STORAGE_KEY, '1');
+                lockFormAsSubmitted();
+                openSuccessModal();
+                
+                // Opcional: limpar formulário após envio bem-sucedido
+                // form.reset();
+                
+            } catch (error) {
+                showMessage(`❌ Erro ao enviar: ${error.message}`, true);
+            }
+        });
+
+        // Botão limpar formulário
+        const clearBtn = document.getElementById('clearBtn');
+        clearBtn.addEventListener('click', () => {
+            if (confirm('Tem certeza que deseja limpar todas as respostas?')) {
+                form.reset();
+                showMessage('🧹 Formulário limpo. Você pode preencher novamente.');
+            }
+        });
+
+        closeModalBtn.addEventListener('click', closeSuccessModal);
+        successModal.addEventListener('click', (e) => {
+            if (e.target === successModal) {
+                closeSuccessModal();
+            }
+        });
+        viewChartsBtn.addEventListener('click', () => {
+            window.location.href = '/graficos.html';
+        });
+        shareWhatsBtn.addEventListener('click', () => {
+            const chartsUrl = `${window.location.origin}/graficos.html`;
+            const text = `Acabei de responder a pesquisa da Prefeitura de Pimenta Bueno. Veja os resultados gerais: ${chartsUrl}`;
+            const whatsUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(whatsUrl, '_blank');
+        });
+
+    })();
+</script>
+</body>
+</html>
